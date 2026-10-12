@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="utf-8"><title>Cartly – Intelligent Shopping Assistant</title>
+0 <!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="utf-8"><title>Cartly – Intelligent Shopping Assistant</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <style>
 :root{--bg:#f1ede5;--c:#faf8f3;--t:#2d0a12;--m:#7b766b;--a:#98002e;--b:#ddd6c8;--g:#9c7c44;--sf:"Fraunces",Georgia,serif;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -430,7 +430,7 @@ $('#mic').onclick=()=>{if(!SR)return say('Voice input is not supported in this b
 ['best phone under 20k with good camera','gaming laptop and mouse under 80000','cheap fitness band','show deals','noise cancelling headphones','gift ideas under 3000','what is trending','AC under 45000','skincare under 700'].forEach(t=>{const c=document.createElement('span');c.className='chip';c.textContent=t;c.onclick=()=>ask(t);$('#chips').appendChild(c)});
 welcome();
 document.addEventListener('keydown',e=>{if(e.key=='Escape'){$('#md').classList.remove('o');openCart(0)}if(e.key=='/'&&document.activeElement.tagName!='INPUT'){e.preventDefault();$('#q').focus()}});$('#vo').onclick=()=>{spk=!spk;$('#vo').classList.toggle('act',spk);toast('Read aloud '+(spk?'on':'off'));if(!spk&&window.speechSynthesis)speechSynthesis.cancel()};$('#bs').onclick=()=>{budget=+$('#bg').value||0;rc()};setInterval(tick,25000);SV.all='<rect class="k1" x="28" y="12" width="28" height="28" rx="6"/><rect class="k2 st" x="64" y="12" width="28" height="28" rx="6"/><rect class="k3" x="28" y="48" width="28" height="28" rx="6"/><rect class="k1" x="64" y="48" width="28" height="28" rx="6"/>';rb();
-$('#bnr').onmouseenter=()=>bnh=1;$('#bnr').onmouseleave=()=>bnh=0;setInterval(()=>{if(!document.hidden&&!bnh)bgo(bi+1)},5000);setInterval(cdt,1000);
+$('#bnr').onmouseenter=()=>bnh=1;$('#bnr').onmouseleave=()=>bnh=0;setInterval(()=>{if(!document.hidden&&!bnh)bgo(bi+1)},3500);setInterval(cdt,1000);
 $('#nc').onclick=()=>{$('#msgs').innerHTML='';last=[];lastO=null;view=null;rg();welcome()};$('#sb').onclick=()=>{rg();$('#shop').scrollIntoView({behavior:'smooth'})};$('#s').onkeydown=e=>{if(e.key=='Enter')$('#sb').click()};
 rc();kc();rg();rrv();
 
