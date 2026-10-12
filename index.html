@@ -1,0 +1,459 @@
+<!DOCTYPE html><html lang="en" data-theme="light"><head><meta charset="utf-8"><title>Cartly – Intelligent Shopping Assistant</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root{--bg:#f1ede5;--c:#faf8f3;--t:#2d0a12;--m:#7b766b;--a:#98002e;--b:#ddd6c8;--g:#9c7c44;--sf:"Fraunces",Georgia,serif;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#11100e;--c:#2d0a12;--t:#efe9dc;--m:#9b9588;--a:#9fd8b6;--b:#2d2b26;--g:#c9a96a}}
+:root[data-theme=dark]{--bg:#11100e;--c:#2d0a12;--t:#efe9dc;--m:#9b9588;--a:#9fd8b6;--b:#2d2b26;--g:#c9a96a}
+*{box-sizing:border-box}html,body{margin:0}body{background:var(--bg);color:var(--t);font:14.5px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+header{display:flex;align-items:center;gap:10px;padding:14px 28px;background:var(--bg);border-bottom:1px solid var(--b);position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+.logo{font:500 28px var(--sf);letter-spacing:-.02em}.logo em{color:var(--a)}.hd{font:italic 15px var(--sf)}
+@media(max-width:700px){.hd{display:none}header{padding:12px 14px}}
+.sp{flex:1}button,select,input{font:inherit;color:inherit}
+.btn{border:1px solid var(--b);background:transparent;border-radius:99px;padding:7px 15px;cursor:pointer;font-size:13px;transition:.15s}.btn:hover{border-color:var(--t)}
+.pri{background:var(--t);color:var(--bg);border-color:var(--t)}.pri:hover{opacity:.85}
+main{display:grid;grid-template-columns:390px 1fr;gap:24px;padding:24px 28px;max-width:1440px;margin:auto}
+@media(max-width:900px){main{grid-template-columns:minmax(0,1fr);padding:14px}}
+.card{background:var(--c);border:1px solid var(--b);border-radius:18px}
+#chat{display:flex;flex-direction:column;height:calc(100vh - 110px);min-height:500px;position:sticky;top:78px}
+@media(max-width:900px){#chat{position:static;height:560px}}
+#msgs{flex:1;overflow:auto;padding:18px;display:flex;flex-direction:column;gap:12px}
+.m{max-width:92%;padding:10px 14px;border-radius:16px;white-space:pre-wrap}.u{align-self:flex-end;background:var(--t);color:var(--bg);border-bottom-right-radius:4px}.bt{align-self:flex-start;background:var(--bg);border-bottom-left-radius:4px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;padding:0 18px 10px}.chip{font-size:12px;padding:5px 11px;border-radius:99px;border:1px solid var(--b);cursor:pointer}.chip:hover{border-color:var(--t)}
+.in{display:flex;gap:6px;padding:12px;border-top:1px solid var(--b)}.in input{flex:1;border:1px solid var(--b);border-radius:99px;padding:9px 15px;background:var(--bg);outline:0}.in input:focus{border-color:var(--t)}
+.mini{display:flex;gap:10px;align-items:center;background:var(--c);border:1px solid var(--b);border-radius:12px;padding:8px 10px;margin-top:8px;color:var(--t)}
+.e{width:34px;height:34px;border-radius:50%;background:var(--bg);display:grid;place-items:center;font:italic 500 17px var(--sf);flex:none}.mini .i{flex:1;min-width:0}.mini b{display:block;font-size:13px}.mini small{color:var(--m)}.mini button{font-size:12px;padding:4px 10px}
+.bar{display:flex;flex-wrap:wrap;gap:8px;padding:14px;align-items:center}.bar input[type=search],.bar select{border:1px solid var(--b);border-radius:99px;padding:8px 14px;background:var(--bg);outline:0}
+input[type=range]{accent-color:var(--a);vertical-align:middle}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;padding:0 14px 14px}
+.p{padding:12px;display:flex;flex-direction:column;gap:5px;transition:.15s}.p:hover{border-color:var(--t)}
+.vis{height:160px;border-radius:12px;background:color-mix(in srgb,hsl(var(--h) 45% 55%) 24%,var(--c));display:flex;flex-direction:column;justify-content:flex-end;padding:12px;cursor:pointer}
+.vis i{font:italic 500 24px var(--sf);letter-spacing:-.01em}.vis small{font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--m)}
+.nm{cursor:pointer;font-weight:600;margin-top:4px}.nm:hover{text-decoration:underline}
+.tag{font-size:12px;color:var(--m)}.pr{font:500 20px var(--sf)}.old{text-decoration:line-through;color:var(--m);font-size:12px;margin-left:6px}
+.off{color:var(--a);font-size:12px;font-weight:600;margin-left:6px}.mt{font-size:11px;font-weight:600;color:var(--a);text-transform:uppercase;letter-spacing:.08em}
+.row{display:flex;gap:6px;margin-top:auto;padding-top:8px}.row .btn{flex:1;padding:6px 8px}
+.dr{position:fixed;right:0;top:0;bottom:0;width:min(400px,100%);background:var(--c);border-left:1px solid var(--b);z-index:20;transform:translateX(105%);transition:.3s cubic-bezier(.2,.8,.2,1);display:flex;flex-direction:column;padding:20px}
+.dr.o{transform:none}.ci{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--b)}
+.md{position:fixed;inset:0;background:#0009;z-index:30;display:none;align-items:center;justify-content:center;padding:14px}.md.o{display:flex}
+.md>div{background:var(--c);border-radius:20px;padding:24px;max-width:720px;width:100%;max-height:90vh;overflow:auto}
+h2,h3,h4{font-family:var(--sf);font-weight:500;margin:6px 0}h4{font-size:15px;margin-top:16px}
+table{width:100%;border-collapse:collapse}td,th{padding:9px 8px;border-bottom:1px solid var(--b);text-align:left;font-size:13.5px}th{color:var(--m);font-weight:500}.w{color:var(--a);font-weight:600}
+.empty{padding:34px;text-align:center;color:var(--m)}.dt{display:grid;grid-template-columns:170px 1fr;gap:18px}@media(max-width:600px){.dt{grid-template-columns:1fr}}
+.spark{width:100%;height:72px;color:var(--a);border-bottom:1px solid var(--b)}.prog{height:4px;border-radius:9px;background:var(--b);margin:8px 0 4px;overflow:hidden}.prog i{display:block;height:100%;background:var(--a)}
+header{backdrop-filter:blur(14px);background:color-mix(in srgb,var(--bg) 82%,transparent)}
+.hero{padding:34px 28px 20px;border-bottom:1px solid var(--b);position:relative;overflow:hidden;border-radius:18px 18px 0 0}.hero:after{content:"";position:absolute;right:-60px;top:-70px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--g) 32%,transparent),transparent 70%)}
+.hero h1{font:500 clamp(30px,4.4vw,54px)/1.03 var(--sf);letter-spacing:-.03em;margin:0 0 10px}.hero h1 em{color:var(--a)}.hero p{margin:0;max-width:500px;color:var(--m)}
+.stats{display:flex;gap:30px;margin-top:20px}.stats b{font:500 22px var(--sf);display:block}.stats span{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--m)}
+.ah{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--b)}.ah .e{background:var(--t);color:var(--bg)}.ah b{font:500 17px var(--sf);display:block;line-height:1.1}.ah small{color:var(--m);font-size:12px}.ah small:before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:#3bb273;margin-right:6px}
+.dots{display:flex;gap:4px;padding:5px 2px}.dots i{width:6px;height:6px;border-radius:50%;background:var(--m);animation:bl 1s infinite}.dots i:nth-child(2){animation-delay:.15s}.dots i:nth-child(3){animation-delay:.3s}
+@keyframes bl{0%,80%,100%{opacity:.25}40%{opacity:1}}@keyframes up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.p,.m{animation:up .45s both}.vis{position:relative;overflow:hidden}.vis:before{content:"";position:absolute;right:-30px;top:-30px;width:140px;height:140px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--c) 85%,transparent),transparent 70%)}
+.vl,.vr{position:absolute;top:10px;font-size:11px;font-weight:600}.vl{left:10px;background:var(--c);padding:3px 9px;border-radius:99px}.vr{right:12px;color:var(--g)}
+.toast{position:fixed;left:50%;bottom:26px;transform:translate(-50%,20px);background:var(--t);color:var(--bg);padding:10px 20px;border-radius:99px;font-size:13px;opacity:0;pointer-events:none;transition:.3s;z-index:50}.toast.o{opacity:1;transform:translate(-50%,0)}
+.rv{display:flex;gap:8px;overflow:auto;padding:0 14px 12px}.rv .chip{white-space:nowrap}.pc{display:grid;grid-template-columns:1fr 1fr;gap:12px}.pc ul{margin:4px 0;padding-left:18px;font-size:13px}
+.tl{display:flex;margin:22px 0;position:relative}.tl:before{content:"";position:absolute;left:12%;right:12%;top:7px;height:2px;background:var(--b)}.tl div{text-align:center;font-size:12px;position:relative;flex:1}.tl div:before{content:"";display:block;width:14px;height:14px;border-radius:50%;background:var(--b);margin:0 auto 6px;position:relative}.tl .on:before{background:var(--a)}
+.mini input{flex:1;border:0;background:transparent;outline:0}
+.rb{display:flex;align-items:center;gap:8px;font-size:12px;margin:3px 0}.rb i{flex:1;height:6px;border-radius:9px;background:var(--b);overflow:hidden}.rb b{display:block;height:100%;background:var(--g)}.rb span{width:30px}
+.art{position:absolute;left:50%;top:22px;transform:translateX(-50%);height:92px;width:auto;filter:drop-shadow(0 7px 7px rgba(0,0,0,.16))}.k1{fill:hsl(var(--h) 62% 46%)}.k2{fill:var(--c)}.k3{fill:var(--t);opacity:.88}.ln{fill:none;stroke:var(--t);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}.st{stroke:var(--t);stroke-width:1.5}
+
+header{background:linear-gradient(100deg,#2d0a12,#52001a)!important;color:#fff1f3;border-bottom:0;backdrop-filter:none}.logo{color:#fff1f3}.logo em{color:#fd8590}header .btn{color:#fff1f3;border-color:#ffffff45}header .btn:hover{border-color:#fff}
+.hs{flex:1;display:flex;gap:8px;max-width:680px;margin:0 14px}.hs input{flex:1;border:0;border-radius:99px;padding:10px 18px;background:#fff1f3;color:#2d0a12;outline:0;min-width:0}header .hs .pri{background:#db2060;border-color:#db2060;color:#fff}
+@media(max-width:700px){header{flex-wrap:wrap}.hs{order:5;flex-basis:100%;margin:0}.logo{flex:1}}
+.cs{display:flex;gap:4px;overflow-x:auto;padding:10px 28px;background:var(--c);border-bottom:1px solid var(--b)}@media(max-width:700px){.cs{padding:8px 12px}}
+.ci2{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:76px;cursor:pointer;padding:6px 6px 7px;font-size:12px;border-bottom:2px solid transparent}.ci2 svg{width:56px;height:44px;border-radius:12px;padding:4px;background:color-mix(in srgb,hsl(var(--h) 45% 55%) 20%,var(--c))}.ci2:hover,.ci2.on{border-bottom-color:var(--a)}.ci2.on{font-weight:600}
+main{grid-template-columns:minmax(0,1fr);max-width:1500px;width:100%}main>section{min-width:0}html,body{overflow-x:hidden}.rs,.cs{max-width:100%}
+#chat{position:fixed;right:20px;bottom:86px;top:auto;width:min(400px,calc(100vw - 24px));height:min(620px,calc(100vh - 120px));min-height:0;display:none;z-index:25;box-shadow:0 24px 70px #0005}#chat.o{display:flex}
+.fab{position:fixed;right:20px;bottom:22px;z-index:26;background:#98002e;color:#fff;border:1px solid #ffffff30;border-radius:99px;padding:14px 22px;font-weight:600;cursor:pointer;box-shadow:0 10px 30px #0005}
+.bnr{margin-bottom:18px}.sl{position:relative;border-radius:18px;overflow:hidden;height:300px}
+.slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:space-between;padding:0 7%;color:#fff1f3;opacity:0;transition:opacity .6s;pointer-events:none}.slide.on{opacity:1;pointer-events:auto}
+.slide .tx{max-width:52%}.slide small{letter-spacing:.2em;font-size:11px;opacity:.75}.slide h2{font:500 clamp(26px,4vw,50px)/1.05 var(--sf);margin:8px 0;letter-spacing:-.02em}.slide p{margin:0 0 20px;opacity:.88;font-size:16px}
+.slide .btn{background:#fff1f3;color:#2d0a12;border-color:#fff1f3;padding:10px 24px;font-weight:600}.slide svg{height:84%;width:auto;flex:none;--c:#faf8f3;--t:#2d0a12;filter:drop-shadow(0 16px 18px rgba(0,0,0,.35))}
+.ar{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:78px;border:0;background:#ffffff26;color:#fff;font-size:26px;cursor:pointer}.ar.l{left:0;border-radius:0 12px 12px 0}.ar.r{right:0;border-radius:12px 0 0 12px}
+.dt2{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:6px}.dt2 i{width:8px;height:8px;border-radius:99px;background:#ffffff66;cursor:pointer;transition:.3s}.dt2 i.on{background:#fff;width:24px}
+@media(max-width:700px){.sl{height:215px}.slide svg{height:58%}.slide .tx{max-width:62%}.slide p{font-size:13px;margin-bottom:12px}.ar{display:none}}
+.rowsec{padding:14px 16px;margin-bottom:16px}.rh{display:flex;align-items:center;gap:14px;margin-bottom:10px}.rh h3{margin:0;font-size:22px}.rh a{margin-left:auto;color:var(--a);font-weight:600;text-decoration:none}
+.rs{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x proximity;padding-bottom:6px}.rc{min-width:198px;max-width:198px;scroll-snap-align:start}.rc .vis{height:136px}.rc .art{height:78px}.rc .btn{margin-top:auto}
+.cd{background:var(--t);color:var(--bg);padding:4px 12px;border-radius:99px;font-size:12px;font-variant-numeric:tabular-nums}.shp #bnr,.shp #rows{display:none}
+.art{top:12px;height:84px}.vis i{font-size:21px}.rc .art{height:72px;top:10px}.sl{height:340px}@media(max-width:700px){.sl{height:215px}}
+header{justify-content:center;gap:14px}.hs{flex:0 1 660px;margin:0}.ci2:first-child{margin-left:auto}.ci2:last-child{margin-right:auto}@media(max-width:700px){header{justify-content:flex-start}.hs{flex-basis:100%}}
+
+#chat{width:min(440px,calc(100vw - 24px));height:min(700px,calc(100vh - 110px));border-radius:22px;overflow:hidden;background:var(--c)}
+.ch{display:flex;align-items:center;gap:8px;padding:16px;background:linear-gradient(120deg,#2d0a12,#7a0f2e);color:#fff1f3}
+.av{width:42px;height:42px;border-radius:50%;background:#fff1f3;color:#52001a;display:grid;place-items:center;font:italic 500 23px var(--sf);flex:none;margin-right:4px}
+.ct{flex:1;min-width:0}.ct b{font:500 19px var(--sf);display:block;line-height:1.1}.ct small{font-size:11.5px;opacity:.82;display:flex;align-items:center;gap:6px;margin-top:3px}.ct i{width:7px;height:7px;border-radius:50%;background:#4ade80;box-shadow:0 0 0 3px #4ade8033;flex:none}
+.ib{width:34px;height:34px;border-radius:50%;border:1px solid #ffffff3a;background:transparent;color:#fff1f3;display:grid;place-items:center;cursor:pointer;padding:0;flex:none}.ib:hover{background:#ffffff22}.ib.act{background:#fd8590;color:#52001a;border-color:#fd8590}.ib svg{width:17px;height:17px}
+.in .ib{width:40px;height:40px;color:var(--t);border-color:var(--b)}.in .ib:hover{background:var(--bg)}.in{gap:8px;align-items:center;background:var(--c)}.in input{padding:11px 16px}
+.send{width:40px;height:40px;border-radius:50%;border:0;background:#98002e;color:#fff;display:grid;place-items:center;cursor:pointer;padding:0;flex:none}.send:hover{background:#52001a}.send svg{width:18px;height:18px}
+#msgs{background:var(--bg);padding:16px;gap:12px}.m.bt{background:var(--c);border:1px solid var(--b);border-radius:16px 16px 16px 4px}.m.u{background:#98002e;color:#fff}
+.qa{display:grid;grid-template-columns:1fr 1fr;gap:8px}.qt{background:var(--c);border:1px solid var(--b);border-radius:14px;padding:11px 12px;cursor:pointer;transition:.15s}.qt:hover{border-color:var(--a);transform:translateY(-2px)}.qt b{display:block;font:500 15px var(--sf)}.qt small{display:block;color:var(--m);font-size:11.5px;line-height:1.3;margin-top:3px}
+.und{display:flex;flex-wrap:wrap;gap:5px;align-items:center}.und span{text-transform:uppercase;letter-spacing:.1em;font-size:10px;color:var(--m);margin-right:2px}.und i{font-style:normal;font-size:11px;font-weight:600;background:color-mix(in srgb,var(--a) 14%,transparent);color:var(--a);padding:2px 9px;border-radius:99px}
+.pcard{display:flex;gap:10px;margin-top:9px;background:var(--bg);border:1px solid var(--b);border-radius:14px;padding:8px;color:var(--t);white-space:normal}.pt{width:78px;flex:none;border-radius:10px;display:grid;place-items:center;background:color-mix(in srgb,hsl(var(--h) 45% 55%) 24%,var(--c))}.pt svg{width:66px}
+.pi{flex:1;min-width:0}.pi b{display:block;font-size:13.5px;line-height:1.25;cursor:pointer}.pp{display:flex;gap:6px;align-items:baseline;margin-top:2px}.pp span{font:500 16px var(--sf)}.pp s{color:var(--m);font-size:11px}.pp em{font-style:normal;color:var(--a);font-weight:600;font-size:11px}.pi small{color:var(--m);font-size:11.5px}.pi u{text-decoration:none;color:var(--g);font-weight:600}
+.pb{display:flex;gap:5px;margin-top:7px;flex-wrap:wrap}.pb button{border:1px solid var(--b);background:var(--c);color:var(--t);border-radius:99px;padding:4px 11px;font-size:11.5px;cursor:pointer}.pb button:first-child{background:var(--t);color:var(--bg);border-color:var(--t)}.pb button:hover{border-color:var(--t)}
+.fu{display:flex;flex-wrap:wrap;gap:6px}.fu .chip{background:var(--c);padding:6px 12px;font-size:12px}.fu .chip:hover{background:var(--t);color:var(--bg);border-color:var(--t)}
+body:has(#chat.o) .fab{display:none}@keyframes pl{0%{box-shadow:0 0 0 0 #98002e99}100%{box-shadow:0 0 0 16px #98002e00}}.fab{animation:pl 2.4s infinite}
+@media(max-width:700px){#chat{right:0;left:0;bottom:0;width:100%;height:90vh;border-radius:22px 22px 0 0}}
+
+:root{--bg:#f3ecdd;--c:#fbf6ea;--t:#2e2218;--m:#7d705e;--a:#8f1d33;--b:#e3d7bd;--g:#b8862b;--on:#fffaf0}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#17130e;--c:#221c15;--t:#f3e9d4;--m:#a89c85;--a:#e58a9a;--b:#3a3126;--g:#d9ac55;--on:#2a1208}}
+:root[data-theme=dark]{--bg:#17130e;--c:#221c15;--t:#f3e9d4;--m:#a89c85;--a:#e58a9a;--b:#3a3126;--g:#d9ac55;--on:#2a1208}
+.pri{background:var(--a);color:var(--on);border-color:var(--a)}.pb button:first-child{background:var(--a);color:var(--on);border-color:var(--a)}
+.slide svg{--c:#fff5f6;--t:#2d0a12}.slide svg .k1{fill:#fd8590}.slide svg .k3{opacity:1}.slide .btn{background:#fff1f3;color:#52001a;border-color:#fff1f3}
+header .btn.pri{color:#fff}.ct i{background:#4ade80}
+a{color:var(--a);font-weight:600}
+
+/* ---- spacious section layout ---- */
+.rowsec{background:none;border:0;border-radius:0;padding:0;margin:0 0 56px}
+.rh{align-items:flex-end;gap:16px;margin:0 6px 20px;padding-bottom:14px;border-bottom:1px solid var(--b);position:relative}
+.rh::after{content:"";position:absolute;left:0;bottom:-1px;width:64px;height:3px;border-radius:3px;background:var(--a)}
+.rh h3{font-size:clamp(28px,3.4vw,40px);line-height:1.1;letter-spacing:-.02em;font-weight:500}
+.rh a{margin-left:auto;padding:8px 16px;border:1px solid var(--b);border-radius:999px;font-size:14px;transition:.2s}
+.rh a:hover{background:var(--a);color:#fff;border-color:var(--a)}
+.rsbox{padding:24px 24px 18px;border-radius:24px;box-shadow:0 10px 30px -18px rgba(120,0,40,.25)}
+.rs{gap:22px;padding:4px 4px 16px}
+.rc{min-width:210px;max-width:210px}
+#bnr{margin-bottom:48px}
+@media(max-width:700px){.rowsec{margin-bottom:40px}.rsbox{padding:16px 14px 10px}.rs{gap:16px}.rh h3{font-size:26px}}
+
+/* ---- real images ---- */
+.vis .ph{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+.vis.hi:before{display:none}.vis.hi .art{display:none}
+.vis.hi:after{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(to top,rgba(30,0,10,.78),rgba(30,0,10,0) 62%)}
+.vis.hi i,.vis.hi small{position:relative;z-index:2;color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.5)}
+.vis.hi small{opacity:.85}
+.vl,.vr{z-index:3}.vis.hi .vr{background:var(--c);padding:3px 8px;border-radius:99px}
+.vl{background:var(--a)!important;color:#fff}
+.sv{font-size:12px;font-weight:600;color:#0a7a3d;background:rgba(10,122,61,.1);padding:3px 9px;border-radius:99px;align-self:flex-start}
+/* banners */
+.slide .bimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+.slide .bsh{position:absolute;inset:0;z-index:1;display:none;background:linear-gradient(95deg,rgba(35,0,12,.92) 8%,rgba(60,0,20,.6) 48%,rgba(60,0,20,.1))}
+.slide.hi .bsh{display:block}.slide.hi svg{display:none}.slide .tx{position:relative;z-index:2}
+.bdg{display:inline-block;background:#ffd84d;color:#3a0714;font-weight:700;font-size:12px;letter-spacing:.08em;padding:6px 14px;border-radius:99px;margin-bottom:12px}
+.slide .tx small{display:block}
+/* discount tiers + coupons */
+.tiers{display:grid;grid-template-columns:repeat(5,1fr);gap:18px;margin:0 0 20px}
+.tier{cursor:pointer;border-radius:20px;padding:26px 18px;text-align:center;color:#fff;background:linear-gradient(135deg,#7a0f2e,#db2060);transition:.2s;box-shadow:0 12px 26px -16px rgba(120,0,40,.6)}
+.tier:nth-child(2n){background:linear-gradient(135deg,#52001a,#98002e)}.tier:nth-child(3n){background:linear-gradient(135deg,#98002e,#e0457b)}
+.tier:hover{transform:translateY(-4px)}.tier b{display:block;font:500 clamp(24px,3vw,36px) var(--sf)}.tier span{font-size:13px;opacity:.9;letter-spacing:.06em;text-transform:uppercase}
+.cps{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.cpn{cursor:pointer;border:2px dashed var(--a);border-radius:18px;padding:16px 20px;background:var(--c);display:flex;flex-direction:column;gap:4px}
+.cpn b{font:600 18px var(--sf);color:var(--a);letter-spacing:.06em}.cpn span{font-size:14px}.cpn em{font-size:11px;color:var(--m);font-style:normal}
+.cd{background:#3a0714;color:#fff;padding:5px 12px;border-radius:99px;font-size:12px;font-weight:600}
+@media(max-width:800px){.tiers{grid-template-columns:repeat(2,1fr)}.cps{grid-template-columns:1fr}}
+
+/* ---- calmer, neutral theme: maroon only for brand, buttons, offers ---- */
+.vis,.ci2 svg{background:color-mix(in srgb,var(--t) 6%,var(--c))}
+.k1{fill:#98002e}
+.card{box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.rsbox{background:var(--c);box-shadow:0 12px 32px -22px rgba(0,0,0,.25)}
+.rh::after{background:var(--a)}
+header{background:#2a0a14!important}
+.tier,.tier:nth-child(2n),.tier:nth-child(3n){background:#2a0a14;box-shadow:0 12px 26px -18px rgba(0,0,0,.5)}
+.tier:nth-child(4){background:#98002e}.tier:nth-child(5){background:linear-gradient(135deg,#c58a00,#e0b24a);color:#2a0a14}
+.cpn{border-color:#c58a00}.cpn b{color:var(--t)}
+.vr{color:var(--g)}.vis.hi .vr{color:#8a5f00}
+.bdg{background:#e0b24a}
+.slide .bsh{background:linear-gradient(95deg,rgba(20,6,10,.9) 8%,rgba(30,8,14,.55) 48%,rgba(30,8,14,.05))}
+.vwrap{display:none;align-items:center;gap:14px;padding:4px 14px 12px}body.shp .vwrap{display:flex}
+#bk{font-weight:600;border-color:var(--a);color:var(--a)}#bk:hover{background:var(--a);color:var(--on)}
+#vw{font-size:14px;font-weight:600;color:var(--t)}
+
+/* ---- cream palette ---- */
+body{background:var(--bg)}
+header{background:#3a1a1f!important}
+.vis,.ci2 svg{background:color-mix(in srgb,#d9c7a3 38%,var(--c))}
+.k1{fill:var(--a)}
+.rsbox{background:var(--c);box-shadow:0 14px 34px -24px rgba(90,60,20,.35)}
+.card{border-color:var(--b);box-shadow:0 1px 2px rgba(90,60,20,.06)}
+.tier,.tier:nth-child(2n),.tier:nth-child(3n){background:#4a2a22;box-shadow:0 12px 26px -18px rgba(60,30,10,.5)}
+.tier:nth-child(4){background:#8f1d33}.tier:nth-child(5){background:linear-gradient(135deg,#b8862b,#dcb768);color:#3a1a1f}
+.cpn{background:#fffaf0;border-color:#b8862b}
+.slide .bsh{background:linear-gradient(95deg,rgba(42,22,14,.9) 8%,rgba(50,26,16,.55) 48%,rgba(50,26,16,.05))}
+.bdg{background:#e3bf72;color:#3a1a1f}
+.sv{color:#2f6b3a;background:rgba(47,107,58,.12)}
+:root[data-theme=dark] .vis,:root[data-theme=dark] .ci2 svg{background:color-mix(in srgb,#8a6b3a 22%,var(--c))}
+:root[data-theme=dark] header{background:#2a1416!important}
+
+/* ---- draggable launcher ---- */
+.fab{display:flex;align-items:center;gap:10px;padding:7px 14px 7px 7px;background:linear-gradient(135deg,#98002e,#d63a6a);touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab;font-size:14px;transition:transform .25s cubic-bezier(.2,1.4,.4,1),opacity .2s,box-shadow .2s}
+.fab .fm{width:40px;height:40px;border-radius:50%;background:#fff1f3;display:grid;place-items:center;flex:none}
+.fab .fm svg{width:32px;height:32px;animation:wig 4.5s infinite}
+.fab .gp{display:grid;grid-template-columns:repeat(2,3px);gap:3px;margin-left:2px;opacity:.55}.fab .gp i{width:3px;height:3px;border-radius:50%;background:#fff}
+.fab.drg{cursor:grabbing;transform:scale(1.07);animation:none;box-shadow:0 20px 44px #0007}
+body:has(#chat.o) .fab{display:flex;opacity:0;pointer-events:none;transform:scale(.5)}
+@keyframes wig{0%,88%,100%{transform:rotate(0)}92%{transform:rotate(-12deg)}96%{transform:rotate(12deg)}}
+
+/* ---- cute chat window ---- */
+#chat{border:0;background:var(--c);border-radius:28px;box-shadow:0 30px 80px -20px rgba(120,0,40,.5),0 0 0 1px rgba(152,0,46,.1);animation:pop .4s cubic-bezier(.2,1.3,.4,1)}
+@keyframes pop{from{opacity:0;transform:scale(.85) translateY(16px)}to{opacity:1;transform:none}}
+.ch{position:relative;z-index:2;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;gap:10px;padding:16px 14px 22px;border-radius:0 0 26px 26px;margin-bottom:-12px;background:radial-gradient(circle at 12% 20%,rgba(255,255,255,.22) 0 2px,transparent 3px),radial-gradient(circle at 88% 70%,rgba(255,255,255,.2) 0 3px,transparent 4px),radial-gradient(circle at 60% 15%,rgba(255,255,255,.18) 0 2px,transparent 3px),linear-gradient(135deg,#8f1d33,#d63a6a 70%,#f08aa8);box-shadow:0 10px 24px -14px rgba(120,0,40,.7)}
+.ch.drg{cursor:grabbing}
+.av{width:48px;height:48px;background:#fff1f3;box-shadow:0 0 0 3px rgba(255,255,255,.35)}
+.av svg{width:38px;height:38px;animation:bob 3s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+.ct b{font-size:20px}.ct small{opacity:.92}
+.ib{background:rgba(255,255,255,.14);border-color:rgba(255,255,255,.3);transition:.15s}.ib:hover{transform:scale(1.08)}
+#msgs{padding:26px 14px 14px;gap:12px;background:radial-gradient(circle at 1px 1px,color-mix(in srgb,var(--a) 14%,transparent) 1.2px,transparent 1.5px) 0 0/18px 18px,color-mix(in srgb,var(--a) 5%,var(--bg));scrollbar-width:thin;scrollbar-color:color-mix(in srgb,var(--a) 35%,transparent) transparent}
+.m{font-size:14px;line-height:1.5}
+.m.bt{background:var(--c);border:0;border-radius:20px 20px 20px 6px;padding:11px 15px;box-shadow:0 3px 12px -5px rgba(120,0,40,.28)}
+.m.u{background:linear-gradient(135deg,#98002e,#d63a6a);color:#fff;border-radius:20px 20px 6px 20px;box-shadow:0 7px 16px -8px rgba(152,0,46,.7)}
+.dots i{background:var(--a);width:7px;height:7px;animation:bnc 1s infinite}
+@keyframes bnc{0%,80%,100%{transform:translateY(0);opacity:.35}40%{transform:translateY(-5px);opacity:1}}
+.qa{gap:10px}.qt{border:0;border-radius:18px;padding:12px;box-shadow:0 3px 12px -6px rgba(120,0,40,.3);background:var(--c)}.qt:hover{transform:translateY(-3px) rotate(-1deg);box-shadow:0 10px 20px -10px rgba(152,0,46,.5)}.qt b{font-size:14.5px}
+.und i{background:color-mix(in srgb,var(--a) 12%,var(--c));border-radius:99px}
+.pcard{border:0;border-radius:18px;background:var(--bg);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--a) 14%,transparent)}.pt{border-radius:14px}
+.pb button{border-radius:99px;transition:.15s}.pb button:hover{transform:translateY(-1px)}
+.fu .chip{border:0;border-radius:99px;background:color-mix(in srgb,var(--a) 10%,var(--c));color:var(--a);font-weight:600;box-shadow:0 2px 6px -3px rgba(120,0,40,.4)}.fu .chip:hover{background:var(--a);color:#fff}
+.in{background:var(--c);border-top:0;padding:10px 12px 14px;box-shadow:0 -10px 22px -18px rgba(120,0,40,.5)}
+.in input{background:color-mix(in srgb,var(--a) 5%,var(--bg));border:1.5px solid transparent;border-radius:99px;transition:.2s}.in input:focus{border-color:var(--a);box-shadow:0 0 0 4px color-mix(in srgb,var(--a) 15%,transparent)}
+.send{background:linear-gradient(135deg,#98002e,#d63a6a);box-shadow:0 6px 14px -6px rgba(152,0,46,.8);transition:.15s}.send:hover{transform:scale(1.1) rotate(-8deg);background:linear-gradient(135deg,#98002e,#d63a6a)}
+@media(max-width:700px){.ch{cursor:default}}
+</style><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;1,9..144,500&family=Inter:wght@400;500;600&display=swap"></head><body>
+<header><span class="logo">Cartly<em>.</em></span><div class="hs"><input type="search" id="s" placeholder="Search for phones, TVs, skincare, brands and more"><button class="btn pri" id="sb">Search</button></div>
+<button class="btn" id="offb" data-a="disc" data-m="30" data-u="0" data-l="30%+ off offers" style="background:var(--a);color:#fff;border-color:var(--a)">🔥 Offers</button><button class="btn" id="th">Theme</button><button class="btn" id="cb">Bag <b id="cn">0</b></button></header><div id="cs" class="cs"></div>
+<main>
+<section class="card" id="chat"><div class="ch"><span class="av">C</span><div class="ct"><b>Cartly Concierge</b><small><i></i>Online · 90+ products, live prices</small></div><button class="ib" id="vo" title="Read replies aloud"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9zM16.5 8.5a5 5 0 0 1 0 7"/></svg></button><button class="ib" id="nc" title="New chat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.3-5.7M20 4v5h-5"/></svg></button><button class="ib" id="cx" title="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div><div id="msgs"></div><div id="chips" style="display:none"></div><div class="in"><button class="ib" id="mic" title="Speak your request"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button><input id="q" placeholder="Ask anything, e.g. best laptop under 60k" autocomplete="off"><button class="send" id="go" title="Send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></div></section>
+<section><div id="bnr" class="bnr"></div><div id="rows"></div><div class="card" id="shop"><div class="bar"><select id="cat"><option value="">All categories</option></select>
+<select id="br"><option value="">All brands</option></select><select id="rt"><option value="0">Any rating</option><option value="4">4★ &amp; up</option><option value="4.5">4.5★ &amp; up</option></select><select id="so"><option value="">Sort: Relevance</option><option value="pa">Price ↑</option><option value="pd">Price ↓</option><option value="r">Top rated</option><option value="d">Biggest discount</option><option value="sc">Cartly Score</option></select>
+<label class="tag">Max <b id="mv">₹1,20,000</b> <input type="range" id="mx" min="500" max="120000" step="500" value="120000"></label>
+<button class="btn" id="wl">Saved <b id="wn">0</b></button><button class="btn" id="cmpb">Compare <b id="kn">0</b></button></div>
+<div class="vwrap"><button class="btn" id="bk" data-a="back">← Back to home</button><div id="vw" class="tag"></div></div><div class="rv" id="rv"></div><div class="grid" id="grid"></div></div></section></main>
+<aside class="dr" id="dr"><div style="display:flex;align-items:center"><h3 style="margin:0;flex:1">Your cart</h3><button class="btn" id="x">✕</button></div>
+<div id="ci" style="flex:1;overflow:auto"></div>
+<div style="display:flex;gap:6px;margin:8px 0"><input id="cp" placeholder="Coupon: SAVE10 / FEST20" style="flex:1;border:1px solid var(--b);border-radius:10px;padding:8px;background:var(--bg)"><button class="btn" id="ap">Apply</button></div>
+<div class="mini" style="margin:0 0 8px"><input id="bg" placeholder="My spending limit ₹" inputmode="numeric"><button class="btn" id="bs">Set</button></div><div id="tt"></div><button class="btn pri" id="co" style="margin-top:8px;padding:11px">Checkout</button></aside>
+<div class="md" id="md"><div id="mb"></div></div>
+<button class="fab" id="fab" aria-label="Ask Cartly AI (drag to move)" title="Drag me anywhere!"><span class="fm" id="fm"></span><span class="ft">Ask Cartly AI</span><span class="gp" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span></button><div class="toast" id="ts"></div><script>
+const $=s=>document.querySelector(s),fmt=n=>'₹'+Math.round(n).toLocaleString('en-IN');
+const P=[["iPhone 15","Phones","Apple",69900,4.7,"","premium camera"],["Galaxy S24","Phones","Samsung",74999,4.6,"","premium camera"],["Redmi Note 13","Phones","Xiaomi",16999,4.3,"","budget battery camera"],["Realme Narzo 70","Phones","Realme",13999,4.1,"","budget battery gaming"],["OnePlus Nord CE4","Phones","OnePlus",24999,4.4,"","battery gaming fast"],
+["MacBook Air M2","Laptops","Apple",94900,4.8,"","premium student battery"],["HP Pavilion 15","Laptops","HP",58990,4.2,"","student"],["Lenovo IdeaPad Slim 3","Laptops","Lenovo",38990,4.1,"","budget student"],["ASUS TUF F15","Laptops","ASUS",64990,4.5,"","gaming"],["Acer Aspire Lite","Laptops","Acer",31990,4,"","budget student"],
+["Sony WH-1000XM5","Audio","Sony",26990,4.7,"","premium noise wireless battery"],["boAt Rockerz 450","Audio","boAt",1499,4,"","budget wireless battery"],["AirPods Pro 2","Audio","Apple",24900,4.7,"","premium noise wireless"],["JBL Flip 6","Audio","JBL",9999,4.5,"","wireless battery"],["Noise Buds VS104","Audio","Noise",1299,3.9,"","budget wireless"],
+["Apple Watch SE","Wearables","Apple",29900,4.5,"","fitness premium"],["Noise ColorFit Pro","Wearables","Noise",2999,4,"","budget fitness battery"],["Mi Smart Band 8","Wearables","Xiaomi",2999,4.3,"","budget fitness battery"],
+["Logitech MX Master 3S","Accessories","Logitech",9995,4.8,"","premium wireless"],["Zebronics Mouse","Accessories","Zebronics",399,3.9,"","budget"],["Keychron K2 Keyboard","Accessories","Keychron",8499,4.6,"","wireless premium"],["Anker 65W Charger","Accessories","Anker",3299,4.6,"","fast"],
+["PlayStation 5","Gaming","Sony",49990,4.8,"","gaming premium"],["Redgear Gaming Mouse","Gaming","Redgear",799,4.1,"","gaming budget"],["Xbox Controller","Gaming","Microsoft",5499,4.5,"","gaming wireless"],
+["Sony Bravia 55 4K","TVs","Sony",74990,4.6,"","premium 4k"],["Samsung Crystal 43 4K","TVs","Samsung",28990,4.3,"","budget 4k"],["LG C3 OLED 55","TVs","LG",109990,4.8,"","premium oled 4k"],["Mi 32 Smart TV","TVs","Xiaomi",12999,4.1,"","budget"],
+["Daikin 1.5T 3 Star Inverter","ACs","Daikin",42990,4.5,"","inverter energy"],["LG Dual Inverter 1.5T","ACs","LG",46990,4.6,"","inverter energy premium"],["Voltas 1.5T 3 Star Split","ACs","Voltas",35990,4.2,"","inverter budget"],
+["Samsung 236L Double Door","Fridges","Samsung",25990,4.4,"","inverter energy"],["LG 260L Frost Free","Fridges","LG",28990,4.5,"","inverter energy"],["Whirlpool 190L Single Door","Fridges","Whirlpool",14990,4.2,"","budget energy"],
+["Titan Neo Analog","Watches","Titan",5995,4.4,"","luxury"],["Casio G-Shock GA-2100","Watches","Casio",9995,4.7,"","premium"],["Fossil Grant Chronograph","Watches","Fossil",10995,4.4,"","luxury premium"],["Fastrack Reflex Classic","Watches","Fastrack",1795,4,"","budget"],
+["Minimalist 10% Vitamin C Serum","Beauty","Minimalist",599,4.5,"","skincare organic"],["Cetaphil Gentle Cleanser","Beauty","Cetaphil",499,4.6,"","skincare"],["Neutrogena Sunscreen SPF 50","Beauty","Neutrogena",699,4.4,"","skincare"],["Dior Sauvage EDT 100ml","Beauty","Dior",9500,4.7,"","fragrance luxury premium"],["Lakmé Absolute Matte Lipstick","Beauty","Lakmé",650,4.2,"","makeup budget"],["L'Oréal Paris Shampoo 650ml","Beauty","L'Oréal",499,4.2,"","haircare budget"],
+["Milton Thermosteel 1L","Bottles","Milton",899,4.3,"","insulated steel budget"],["Stanley Quencher 1.18L","Bottles","Stanley",3500,4.6,"","insulated steel premium"],["Cello Puro Glass 1L","Bottles","Cello",449,4.1,"","glass budget"],
+["God of War Ragnarök (PS5)","Games","Sony",3999,4.8,"","gaming premium"],["Mario Kart 8 Deluxe","Games","Nintendo",4999,4.8,"","gaming multiplayer family"],["EA Sports FC 25","Games","EA",3499,4.1,"","gaming multiplayer"],["Catan Board Game","Games","Catan",3299,4.6,"","multiplayer family"],
+["Samsung Galaxy M14","Phones","Samsung",12990,4.1,"","budget battery"],["Poco M6 Pro","Phones","Poco",9999,4.2,"","budget gaming"],["Moto G34","Phones","Motorola",10999,4.1,"","budget"],["Redmi 13C","Phones","Xiaomi",8999,4,"","budget battery"],
+["HP 14s Everyday","Laptops","HP",34990,4,"","budget student"],["Dell Inspiron 15","Laptops","Dell",45990,4.2,"","student"],
+["boAt Airdopes 141","Audio","boAt",1299,4.1,"","budget wireless battery"],["realme Buds T110","Audio","Realme",1199,4,"","budget wireless"],["OnePlus Nord Buds 2","Audio","OnePlus",2799,4.3,"","wireless battery"],["Zebronics Thunder Headphones","Audio","Zebronics",899,3.9,"","budget wireless"],["JBL Go 3 Speaker","Audio","JBL",2999,4.5,"","wireless battery"],
+["Fire-Boltt Ninja Call Pro","Wearables","Fire-Boltt",1799,4,"","budget fitness"],["Amazfit Bip 5","Wearables","Amazfit",4999,4.2,"","fitness battery"],
+["Ambrane 20W Charger","Accessories","Ambrane",499,4,"","fast budget"],["boAt 20000mAh Power Bank","Accessories","boAt",1799,4.2,"","fast"],["HP Wireless Mouse","Accessories","HP",599,4.2,"","budget wireless"],["Logitech K380 Keyboard","Accessories","Logitech",2495,4.5,"","wireless"],["Zebronics Keyboard","Accessories","Zebronics",449,3.9,"","budget"],
+["Logitech G102 Gaming Mouse","Gaming","Logitech",1295,4.5,"","gaming budget"],["PS5 DualSense Controller","Gaming","Sony",5990,4.7,"","gaming wireless"],["Redgear Pro Controller","Gaming","Redgear",1499,4,"","gaming budget"],
+["TCL 43 4K Google TV","TVs","TCL",24990,4.2,"","budget 4k"],["Acer 32 Smart TV","TVs","Acer",11999,4,"","budget"],
+["Lloyd 1.5T Inverter Split","ACs","Lloyd",34990,4.1,"","inverter budget"],["Blue Star 1.5T Inverter","ACs","Blue Star",38990,4.3,"","inverter energy"],
+["Haier 320L Double Door","Fridges","Haier",27990,4.3,"","inverter energy"],["Godrej 185L Single Door","Fridges","Godrej",13490,4.1,"","budget energy"],
+["Casio Vintage A168","Watches","Casio",3495,4.6,"","luxury"],["Timex Easy Reader","Watches","Timex",4495,4.3,"","luxury"],["Sonata Classic Analog","Watches","Sonata",1295,4.1,"","budget"],
+["Mamaearth Ubtan Face Wash","Beauty","Mamaearth",249,4.2,"","skincare organic"],["Nivea Soft Cream","Beauty","Nivea",199,4.4,"","skincare budget"],["Himalaya Neem Face Wash","Beauty","Himalaya",175,4.3,"","skincare budget"],["Maybelline Colossal Kajal","Beauty","Maybelline",249,4.3,"","makeup budget"],["Plum Green Tea Serum","Beauty","Plum",549,4.3,"","skincare"],["The Derma Co Sunscreen","Beauty","The Derma Co",499,4.4,"","skincare"],["Nykaa Matte Lipstick","Beauty","Nykaa",399,4.1,"","makeup budget"],["Dove Shampoo 650ml","Beauty","Dove",449,4.2,"","haircare budget"],
+["Cello Hydra 1L Bottle","Bottles","Cello",299,4,"","budget"],["Borosil Hydra Steel 750ml","Bottles","Borosil",699,4.4,"","insulated steel"],
+["Monopoly Classic","Games","Hasbro",799,4.4,"","multiplayer family"],["Uno Card Game","Games","Mattel",199,4.6,"","multiplayer family"],["Jenga Classic","Games","Hasbro",899,4.5,"","multiplayer family"],["Spider-Man 2 (PS5)","Games","Sony",3499,4.7,"","gaming"]]
+.map((a,i)=>{const pb=a[3]>40000?[8,12,15,18,22]:a[3]>10000?[15,20,25,30,35]:[30,35,40,45,50,55,60],d=pb[(i*11+3)%pb.length];return{id:i,n:a[0],c:a[1],b:a[2],p:a[3],r:a[4],e:a[5],t:a[6],d,o:Math.round(a[3]/(1-d/100)/10)*10}});
+const CATS=[...new Set(P.map(p=>p.c))];
+let dsc=null,cart={},wish=[],cmp=[],last=[],view=null,coupon=null,alerts={},budget=0;
+try{cart=JSON.parse(localStorage.getItem('cartly_cart')||'{}');wish=JSON.parse(localStorage.getItem('cartly_wish')||'[]');alerts=JSON.parse(localStorage.getItem('cartly_al')||'{}')}catch(e){}
+const save=()=>{try{localStorage.setItem('cartly_cart',JSON.stringify(cart));localStorage.setItem('cartly_wish',JSON.stringify(wish));localStorage.setItem('cartly_al',JSON.stringify(alerts))}catch(e){}};
+const byId=i=>P[i];
+const CAT={Phones:/phone|mobile/,Laptops:/laptop|notebook|macbook/,Audio:/headphone|earbud|earphone|speaker|audio|buds/,Wearables:/smart ?watch|band|wearable|tracker|fitness watch|apple watch/,Watches:/(?<!smart )(?<!fitness )(?<!apple )\bwatch(es)?\b|wristwatch|analog/,Accessories:/mouse|keyboard|charger|accessor/,Gaming:/console|controller|playstation|xbox|gaming gear/,Games:/\bgames?\b|board game|video game/,TVs:/\btvs?\b|television|oled|qled/,ACs:/\bacs?\b|air condition|split ac/,Fridges:/fridge|refrigerator|freezer/,Beauty:/beauty|skincare|makeup|lipstick|perfume|fragrance|serum|moisturi[sz]er|sunscreen|shampoo|cosmetic/,Bottles:/bottle|flask|tumbler|sipper/};
+const TAG=['gaming','battery','camera','budget','premium','wireless','fitness','student','noise','fast','inverter','energy','4k','oled','luxury','organic','insulated','steel','glass','multiplayer','family','makeup','skincare','fragrance','haircare'];
+const SYN={cheap:'budget',affordable:'budget',gamer:'gaming',games:'gaming',college:'student',study:'student',photo:'camera',gym:'fitness',workout:'fitness',anc:'noise',bluetooth:'wireless','long battery':'battery','energy saving':'energy','star rating':'energy','perfume':'fragrance','lipstick':'makeup','sunscreen':'skincare','hair':'haircare','thermos':'insulated'};
+function parse(q){q=q.toLowerCase();const o={cats:[],tags:[],max:null,min:null,sort:null,brand:null};
+for(const k in CAT)if(CAT[k].test(q))o.cats.push(k);
+let m=q.match(/(?:under|below|within|upto|up to|max|less than|budget of|budget|<)\s*(?:rs\.?|inr|₹)?\s*(\d[\d,]*(?:\.\d+)?)\s*(k|l|lakh)?/)||q.match(/(?:rs\.?|inr|₹)\s*(\d[\d,]*)\s*(k)?/);
+if(m){let v=parseFloat(m[1].replace(/,/g,''));if(m[2]=='k')v*=1e3;if(m[2]=='l'||m[2]=='lakh')v*=1e5;o.max=v}
+m=q.match(/(?:above|over|more than|min)\s*(?:rs\.?|₹)?\s*(\d[\d,]*)\s*(k)?/);if(m)o.min=parseFloat(m[1].replace(/,/g,''))*(m[2]?1e3:1);
+TAG.forEach(t=>q.includes(t)&&o.tags.push(t));for(const s in SYN)if(q.includes(s)&&!o.tags.includes(SYN[s]))o.tags.push(SYN[s]);
+if(o.max)o.tags=o.tags.filter(t=>t!='budget');
+if(/cheapest|lowest|least/.test(q))o.sort='p';else if(/top rated|highest rated/.test(q))o.sort='r';
+const b=[...new Set(P.map(p=>p.b))].find(b=>q.includes(b.toLowerCase()));if(b)o.brand=b;return o}
+function search(o){const mx=50+12*o.tags.length+6;return P.filter(p=>(!o.cats.length||o.cats.includes(p.c))&&(!o.max||p.p<=o.max)&&(!o.min||p.p>=o.min)&&(!o.brand||p.b==o.brand)).map(p=>{let s=p.r*10;o.tags.forEach(t=>p.t.includes(t)&&(s+=12));if(o.max)s+=p.p/o.max*6;return{p,s,pct:Math.min(99,Math.round(s/mx*100))}}).sort((a,b)=>o.sort=='p'?a.p.p-b.p.p:o.sort=='r'?b.p.r-a.p.r:b.s-a.s)}
+function combo(o,q){const kw=((q||'').match(/mouse|keyboard|charger|controller|console/)||[])[0],pool=c=>{const l=P.filter(p=>p.c==c),k=l.filter(p=>kw&&(kw=='mouse'?/mouse|master/:new RegExp(kw)).test(p.n.toLowerCase()));return k.length?k:l},mn=c=>Math.min(...pool(c).map(p=>p.p)),out=[];
+o.cats.forEach((c,i)=>{const rest=o.cats.slice(i+1).reduce((a,k)=>a+mn(k),0),rem=o.max-out.reduce((a,p)=>a+p.p,0)-rest;out.push(pool(c).filter(p=>p.p<=rem).sort((a,b)=>b.r-a.r||b.p-a.p)[0]||pool(c).sort((a,b)=>a.p-b.p)[0])});return out}
+function say(t,u,items){const d=document.createElement('div');d.className='m '+(u?'u':'bt');if(spk&&!u&&window.speechSynthesis){speechSynthesis.cancel();speechSynthesis.speak(new SpeechSynthesisUtterance(t))}if(u||t.length>260)d.textContent=t;else{let n=0;d.textContent=' ';const tk=setInterval(()=>{d.firstChild.textContent=t.slice(0,n+=3);$('#msgs').scrollTop=1e9;if(n>=t.length)clearInterval(tk)},12)}
+(items||[]).forEach(x=>{const p=pp(x),e=document.createElement('div');e.className='pcard';e.innerHTML=`<div class="pt" style="--h:${340+p.id*7%40}"><svg viewBox="0 0 120 90">${SV[artKey(p)]}</svg></div><div class="pi"><b data-a="det" data-i="${p.id}">${p.n}</b><div class="pp"><span>${fmt(p.p)}</span><s>${fmt(p.o)}</s><em>${p.d}% off</em></div><small>★ ${p.r} · Score ${sc(p)}${x.pct?` · <u>${x.pct}% match</u>`:''}</small><div class="pb"><button data-a="add" data-i="${p.id}">Add to bag</button><button data-a="det" data-i="${p.id}">Details</button><button data-a="cmp" data-i="${p.id}">Compare</button></div></div>`;d.appendChild(e)});
+$('#msgs').appendChild(d);$('#msgs').scrollTop=1e9}
+function why(x,o){const p=x.p,r=[];if(o.max)r.push(`${fmt(o.max-p.p)} under your ${fmt(o.max)} budget`);o.tags.forEach(t=>p.t.includes(t)&&r.push('matches '+t));r.push(`${p.r}★ rating`);if(p.d>=15)r.push(p.d+'% off');return r.join(', ')}
+function ask(q){q=q.trim();if(!q)return;say(q,1);const d=document.createElement('div');d.className='m bt';d.innerHTML='<div class="dots"><i></i><i></i><i></i></div>';$('#msgs').appendChild(d);$('#msgs').scrollTop=1e9;setTimeout(()=>{d.remove();reply(q);setTimeout(follow,60)},650)}
+function reply(q){const l=q.toLowerCase();let m;
+if(/^(hi|hello|hey|namaste)\b/.test(l))return say('Hi Viresh!  Tell me what you need in plain words — product, budget, use-case. I can search, compare, build a bundle within a budget, find deals and manage your cart.');
+if(/help|what can you do/.test(l))return say('Try:\n• "best phone under 20k with good camera"\n• "gaming laptop and mouse under 80000"  (bundle builder)\n• "compare" (top results or your  picks)\n• "add 1" / "add first" to cart\n• "trending" · "gift under 3000" · "alert me below 20000"\n• "show deals" · "show cart" · "coupons"');
+if(/clear cart|empty cart/.test(l)){cart={};save();rc();return say('Cart cleared ')}
+if(/(show|open|view).*(cart|bag)|my (cart|bag)|checkout|what.?s in my|cart total|bag total/.test(l)){const ks=Object.keys(cart),sub=ks.reduce((a,i)=>a+byId(i).p*cart[i],0);openCart(1);if(ks.length)return say(`Your bag has ${ks.reduce((a,i)=>a+cart[i],0)} item(s) worth ${fmt(sub)}:\n`+ks.map(i=>`• ${byId(i).n} x${cart[i]}`).join('\n')+'\nApply a coupon in the bag to save more.');return say('Opened your cart ')}
+if(/coupon|promo/.test(l))return say('Codes: SAVE10 (10% off), WELCOME500 (₹500 off above ₹3,000), FEST20 (20% off, max ₹2,000). Apply them in the cart.');
+if(/trending|popular|top picks/.test(l)){const r=[...P].sort((a,b)=>sc(b)-sc(a)).slice(0,4);last=r;return say('Top picks by Cartly Score (rating + value + discount):',0,r)}
+if(/gift/.test(l)){const m=parse(q).max||5000,r=CATS.map(c=>P.filter(p=>p.c==c&&p.p<=m).sort((a,b)=>b.r-a.r)[0]).filter(Boolean).sort((a,b)=>b.r-a.r).slice(0,4);last=r;return say(r.length?`Gift ideas under ${fmt(m)}, best rated in each category:`:'Nothing that cheap. Try a higher budget.',0,r)}
+if(/(alert|notify|track).*\d/.test(l)&&last.length){const mm=l.match(/(\d[\d,]*)\s*(k)?/),v=parseFloat(mm[1].replace(/,/g,''))*(mm[2]?1e3:1),p=pp(last[0]);alerts[p.id]=v;save();return say(`Alert set: I will tell you when ${p.n} drops below ${fmt(v)}.`)}
+if(/deal|offer|discount|sale/.test(l)){const r=[...P].sort((a,b)=>b.d-a.d).slice(0,4);last=r;return say(' Biggest discounts right now:',0,r)}
+if(/add all/.test(l)&&last.length){last.forEach(x=>addCart(pp(x).id));return say(`Added ${last.length} items to your bag.`)}
+if(m=l.match(/add\s+(?:the\s+)?(first|second|third|\d)/)){const i={first:1,second:2,third:3}[m[1]]||+m[1],p=last[i-1];if(!p)return say('Search for something first, then say "add 1".');p0=pp(p);addCart(p0.id);return say(`Added ${p0.n} to your cart `)}
+if(/compare|versus|\bvs\b/.test(l)){let ids=cmp.length>1?cmp:last.slice(0,3).map(x=>pp(x).id);if(ids.length<2)return say('Search first (or tap  on two products) and I will compare them.');cmp=ids.slice(0,3);kc();showCmp();return say('Here is the comparison ')}
+if(lastO&&last.length&&/cheaper|lower price|less expensive|better rated|higher rated|more premium/.test(l)){const o2=JSON.parse(JSON.stringify(lastO)),t=pp(last[0]);if(/cheaper|lower|less/.test(l))o2.max=t.p-1;else{o2.min=t.p+1;o2.sort='r'}return run(o2,q)}
+return run(parse(q),q)}function run(o,q){const l=q.toLowerCase();lastO=o;und(o);
+if(o.cats.length>1&&o.max){const it=combo(o,l),tot=it.reduce((a,p)=>a+p.p,0);last=it;view={ids:it.map(p=>p.id)};rg();
+return say(`Smart bundle for ${fmt(o.max)}: best-rated pick per category.\nTotal ${fmt(tot)} — ${tot<=o.max?'saves '+fmt(o.max-tot)+' ':'slightly over budget; these are the cheapest good options '}`,0,it)}
+const r=search(o);if(!o.cats.length&&!o.tags.length&&!o.max&&!o.brand){const t=P.filter(p=>l.split(/\W+/).some(w=>w.length>2&&p.n.toLowerCase().includes(w)));if(t.length){last=t;view={ids:t.map(p=>p.id)};rg();return say('Found these:',0,t.slice(0,4))}return say('I did not catch that  Try "best earbuds under 3000" or type "help".')}
+if(!r.length){return say('No exact match. Try raising the budget or relaxing a filter — I can also show "deals".')}
+last=r;view={ids:r.map(x=>x.p.id),pct:Object.fromEntries(r.map(x=>[x.p.id,x.pct]))};rg();
+say(`Top pick: ${r[0].p.n} — ${why(r[0],o)}.\nShowing ${r.length} result${r.length>1?'s':''} (best first). Say "compare" or "add 1".`,0,r.slice(0,3))}
+const PR={budget:'Easy on the wallet',battery:'Long battery life',camera:'Strong camera',premium:'Premium build quality',wireless:'Wireless freedom',gaming:'Built for gaming',fitness:'Solid fitness tracking',student:'Great for students',noise:'Effective noise cancelling',fast:'Fast charging',inverter:'Inverter tech saves power',energy:'Energy efficient','4k':'Crisp 4K picture',oled:'Deep blacks on OLED',luxury:'Luxury styling',organic:'Gentle formulation',insulated:'Keeps drinks hot or cold',multiplayer:'Great with friends',family:'Fun for the family',skincare:'Skin-friendly care',makeup:'Colour that lasts',fragrance:'Long-lasting scent',haircare:'Everyday hair care',steel:'Durable steel body',glass:'Clean taste, no odour'};
+let recent=[];const eta=n=>new Date(Date.now()+n*864e5).toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'});
+function toast(m){const t=$('#ts');t.textContent=m;t.classList.add('o');clearTimeout(toast.k);toast.k=setTimeout(()=>t.classList.remove('o'),1800)}
+function rrv(){$('#rv').innerHTML=recent.length?'<span class="tag" style="align-self:center">Recently viewed</span>'+recent.map(i=>`<span class="chip" data-a="det" data-i="${i}">${byId(i).n}</span>`).join(''):''}
+function pcx(p){const pr=p.t.split(' ').map(t=>PR[t]).filter(Boolean),cn=[p.p>40000&&'Higher price point',p.r<4.2&&'Reviews are mixed',p.c=='Audio'&&!p.t.includes('wireless')&&'Limited wireless'].filter(Boolean);if(!cn.length)cn.push('No major drawbacks found');
+return `<div class="pc"><div><h4>Why people like it</h4><ul>${pr.map(x=>`<li>${x}</li>`).join('')}</ul></div><div><h4>Keep in mind</h4><ul>${cn.map(x=>`<li>${x}</li>`).join('')}</ul></div></div>`}
+const SV={
+ph:'<rect class="k1" x="42" y="6" width="36" height="78" rx="7"/><rect class="k2" x="46" y="12" width="28" height="62" rx="3"/><circle class="k1" cx="53" cy="20" r="3"/><circle class="k3" cx="60" cy="79" r="2"/>',
+lap:'<rect class="k1" x="24" y="12" width="72" height="48" rx="4"/><rect class="k2" x="28" y="16" width="64" height="40" rx="2"/><path class="k3" d="M10 64h100l-6 11H16z"/>',
+hp:'<path class="ln" style="stroke-width:5" d="M30 54V44a30 30 0 0 1 60 0v10"/><rect class="k1" x="20" y="48" width="18" height="28" rx="7"/><rect class="k1" x="82" y="48" width="18" height="28" rx="7"/>',
+buds:'<rect class="k1" x="32" y="30" width="56" height="40" rx="15"/><path class="ln" d="M32 48h56"/><circle class="k3" cx="60" cy="59" r="2.5"/>',
+spk:'<rect class="k1" x="24" y="30" width="72" height="36" rx="18"/><path class="ln" style="stroke:var(--c);stroke-width:3" d="M44 42v12M54 38v20M64 42v12M74 40v16"/>',
+sw:'<rect class="k3" x="48" y="4" width="24" height="82" rx="6"/><rect class="k1" x="40" y="26" width="40" height="40" rx="11"/><rect class="k2" x="45" y="31" width="30" height="30" rx="7"/>',
+aw:'<rect class="k3" x="48" y="4" width="24" height="82" rx="6"/><circle class="k1" cx="60" cy="45" r="25"/><circle class="k2" cx="60" cy="45" r="20"/><path class="ln" d="M60 45V32M60 45l9 5"/>',
+mouse:'<rect class="k1" x="44" y="12" width="32" height="62" rx="16"/><path class="ln" d="M60 12v24M44 36h32"/>',
+kb:'<rect class="k1" x="12" y="28" width="96" height="40" rx="6"/><path class="ln" style="stroke:var(--c);stroke-width:5;stroke-dasharray:7 4" d="M20 38h80M20 48h80M30 58h60"/>',
+chg:'<rect class="k3" x="50" y="4" width="5" height="14"/><rect class="k3" x="65" y="4" width="5" height="14"/><rect class="k1" x="38" y="18" width="44" height="52" rx="8"/><rect class="k2" x="53" y="36" width="14" height="9" rx="2"/>',
+con:'<rect class="k2 st" x="38" y="6" width="44" height="78" rx="14"/><rect class="k1" x="56" y="6" width="8" height="78"/>',
+ctl:'<path class="k1" d="M32 26h56q16 0 20 22l3 16q0 10-9 10-7 0-11-9l-4-8H33l-4 8q-4 9-11 9-9 0-9-10l3-16q4-22 20-22z"/><circle class="k2" cx="40" cy="42" r="5"/><circle class="k2" cx="80" cy="46" r="4"/>',
+gm:'<rect class="k1" x="34" y="6" width="52" height="78" rx="3"/><rect class="k2" x="38" y="10" width="44" height="44" rx="2"/><path class="ln" style="stroke:var(--c);stroke-width:3" d="M40 64h38M40 73h22"/>',
+tv:'<rect class="k3" x="12" y="10" width="96" height="58" rx="4"/><rect class="k1" x="16" y="14" width="88" height="50" rx="2"/><path class="ln" style="stroke-width:4" d="M42 78h36M60 68v10"/>',
+ac:'<rect class="k2 st" x="8" y="18" width="104" height="36" rx="9"/><path class="ln" d="M18 44h84"/><circle class="k1" cx="100" cy="30" r="3"/><path class="ln" style="opacity:.5" d="M30 64q5 7 0 14M60 64q5 7 0 14M90 64q5 7 0 14"/>',
+fr:'<rect class="k2 st" x="34" y="4" width="52" height="82" rx="5"/><path class="ln" d="M34 34h52"/><rect class="k1" x="40" y="16" width="3" height="12" rx="1"/><rect class="k1" x="40" y="42" width="3" height="20" rx="1"/>',
+bt:'<rect class="k3" x="52" y="4" width="16" height="10" rx="3"/><rect class="k1" x="43" y="14" width="34" height="72" rx="11"/><rect class="k2" x="50" y="34" width="20" height="26" rx="3"/>',
+perf:'<rect class="k3" x="50" y="6" width="20" height="12" rx="2"/><rect class="k3" x="56" y="18" width="8" height="8"/><rect class="k1" x="32" y="26" width="56" height="58" rx="10"/><rect class="k2" x="44" y="42" width="32" height="22" rx="2"/>',
+lip:'<rect class="k3" x="48" y="48" width="24" height="36" rx="3"/><rect class="k2 st" x="51" y="30" width="18" height="18"/><path class="k1" d="M51 30l3-16 11 3 4 13z"/>',
+ser:'<rect class="k3" x="54" y="4" width="12" height="20" rx="4"/><rect class="k1" x="46" y="22" width="28" height="12" rx="3"/><rect class="k2 st" x="42" y="34" width="36" height="50" rx="8"/><rect class="k1" x="48" y="50" width="24" height="16" rx="2"/>',
+tube:'<path class="k1" d="M42 10h36l-4 64H46z"/><rect class="k3" x="45" y="74" width="30" height="12" rx="3"/><rect class="k2" x="48" y="34" width="24" height="18" rx="2"/>'};
+function artKey(p){const n=p.n.toLowerCase(),c=p.c;
+if(c=='Audio')return /buds|airpods/.test(n)?'buds':/jbl|flip/.test(n)?'spk':'hp';
+if(c=='Accessories')return /mouse/.test(n)?'mouse':/keyboard/.test(n)?'kb':'chg';
+if(c=='Gaming')return /mouse/.test(n)?'mouse':/controller/.test(n)?'ctl':'con';
+if(c=='Beauty')return /dior/.test(n)?'perf':/lipstick/.test(n)?'lip':/serum/.test(n)?'ser':'tube';
+return {Phones:'ph',Laptops:'lap',Wearables:'sw',Watches:'aw',Games:'gm',TVs:'tv',ACs:'ac',Fridges:'fr',Bottles:'bt'}[c]||'gm'}
+const CK={All:'all',Phones:'ph',Laptops:'lap',Audio:'hp',Wearables:'sw',Watches:'aw',Accessories:'mouse',Gaming:'ctl',Games:'gm',TVs:'tv',ACs:'ac',Fridges:'fr',Beauty:'ser',Bottles:'bt'};
+const BN=[['Mega Appliance Sale','Up to 30% off on TVs, ACs and fridges · no-cost EMI','Shop appliances','TVs','tv',150,'linear-gradient(110deg,#2d0a12,#98002e)','television','UP TO 30% OFF'],['Latest smartphones','Phones from ₹13,999 with exchange bonus','Explore phones','Phones','ph',20,'linear-gradient(110deg,#52001a,#db2060)','smartphone','EXCHANGE BONUS'],['Glow up for less','Skincare and fragrance, up to 60% off','Shop beauty','Beauty','ser',45,'linear-gradient(110deg,#3a0714,#7a0f2e)','skincare,cosmetics','UP TO 60% OFF'],['Level up your game','Consoles, controllers and top titles · deals inside','Shop gaming','Gaming','ctl',210,'linear-gradient(110deg,#98002e,#c01650)','gaming,controller','FLASH DEALS'],['Not sure what to buy?','Tell Cartly your budget and it builds the perfect bundle','Ask Cartly AI','','lap',280,'linear-gradient(110deg,#2d0a12,#52001a)','shopping,lifestyle','SMART BUNDLES']];
+const BIMG={0:'images/banner-appliances.jpg',1:'images/banner-phones.jpg',2:'images/banner-beauty.jpg',3:'images/banner-gaming.jpg',4:'images/banner-cartly-ai.jpg'};
+let bi=0,bnh=0;
+function rb(){$('#bnr').innerHTML=`<div class="sl">${BN.map((b,i)=>`<div class="slide hi${i==bi?' on':''}" style="background:${b[6]}"><img class="bimg" alt="" src="${BIMG[i]||'https://loremflickr.com/1600/700/'+b[7]+'?lock='+(i+40)}" onerror="this.parentNode.classList.remove('hi');this.remove()"><div class="bsh"></div><div class="tx"><span class="bdg">${b[8]}</span><small>CARTLY EXCLUSIVE</small><h2>${b[0]}</h2><p>${b[1]}</p><button class="btn" data-a="${b[3]?'cat':'chat'}" data-c="${b[3]}">${b[2]}</button></div><svg viewBox="0 0 120 90" style="--h:${b[5]}">${SV[b[4]]}</svg></div>`).join('')}<button class="ar l" data-a="bn" data-d="-1">‹</button><button class="ar r" data-a="bn" data-d="1">›</button><div class="dt2">${BN.map((_,i)=>`<i class="${i==bi?'on':''}" data-a="bn" data-i="${i}"></i>`).join('')}</div></div>`}
+function bgo(n){bi=(n+BN.length)%BN.length;document.querySelectorAll('.slide').forEach((e,i)=>e.classList.toggle('on',i==bi));document.querySelectorAll('.dt2 i').forEach((e,i)=>e.classList.toggle('on',i==bi))}
+const rcard=p=>`<div class="card p rc">${vis(p)}<b class="nm" data-a="det" data-i="${p.id}">${p.n}</b><div><span class="pr">${fmt(p.p)}</span><span class="old">${fmt(p.o)}</span></div><div class="sv">Save ${fmt(p.o-p.p)} · ${p.d}% off</div><button class="btn pri" data-a="add" data-i="${p.id}">Add to bag</button></div>`;
+const TIERS=[['Under ₹499','Steal deals',0,499],['30%+','off',30,0],['40%+','off',40,0],['50%+','Half price',50,0],['60%','Max discount',60,0]];
+const CPN=[['SAVE10','Extra 10% off any order'],['WELCOME500','₹500 off above ₹3,000'],['FEST20','20% off, up to ₹2,000']];
+function offersHTML(){return `<div class="rowsec"><div class="rh"><h3>Shop by discount</h3><span class="cd" id="cd"></span></div><div class="tiers">${TIERS.map(t=>`<div class="tier" data-a="disc" data-m="${t[2]}" data-u="${t[3]}" data-l="${t[0]} ${t[1]}"><b>${t[0]}</b><span>${t[1]}</span></div>`).join('')}</div><div class="cps">${CPN.map(c=>`<div class="cpn" data-a="cpn" data-c="${c[0]}"><b>${c[0]}</b><span>${c[1]}</span><em>Tap to copy</em></div>`).join('')}</div></div>`}
+function rrows(){const sl=[...document.querySelectorAll('.rs')].map(e=>e.scrollLeft);
+const L=[['Flash sale · 50% off & above',P.filter(p=>p.d>=50).sort((a,b)=>b.d-a.d).slice(0,12),'','d50'],['Deals of the day',[...P.filter(p=>p.c=='Beauty').sort((a,b)=>b.d-a.d),...P.filter(p=>p.c!='Beauty').sort((a,b)=>b.d-a.d)].slice(0,12),'','d'],['Top picks by Cartly Score',[...P].sort((a,b)=>sc(b)-sc(a)).slice(0,10),'','sc'],['Under ₹999 steals',P.filter(p=>p.p<=999).sort((a,b)=>b.d-a.d).slice(0,12),'','p999'],['Budget buys under ₹3,000',P.filter(p=>p.p<=3000).sort((a,b)=>b.r-a.r).slice(0,10),'','pa']];
+$('#rows').innerHTML=offersHTML()+L.map(r=>`<div class="rowsec"><div class="rh"><h3>${r[0]}</h3>${r[2]}<a href="#" data-a="all" data-s="${r[3]}">See all <span aria-hidden="true">→</span></a></div><div class="card rsbox"><div class="rs">${r[1].map(rcard).join('')}</div></div></div>`).join('');
+document.querySelectorAll('.rs').forEach((e,i)=>e.scrollLeft=sl[i]||0);cdt()}
+function cdt(){const e=$('#cd');if(!e)return;const n=new Date(),m=new Date(n);m.setHours(24,0,0,0);const d=m-n;e.textContent='Ends in '+[Math.floor(d/36e5),Math.floor(d/6e4)%60,Math.floor(d/1e3)%60].map(x=>String(x).padStart(2,'0')).join(':')}
+function rx(){const act=!!(view||dsc||$('#s').value||$('#cat').value);document.body.classList.toggle('shp',act);const k=$('#cat').value;
+if(rx.k!==k){rx.k=k;$('#cs').innerHTML=['All',...CATS].map((c,i)=>`<div class="ci2${(c=='All'?!k:c==k)?' on':''}" data-a="cat" data-c="${c}"><svg viewBox="0 0 120 90" style="--h:${340+i*9%40}">${SV[CK[c]]}</svg><span>${c}</span></div>`).join('')}
+if(act)$('#rows').innerHTML='';else rrows()}
+function welcome(){const h=new Date().getHours(),g=h<12?'Good morning':h<17?'Good afternoon':'Good evening';
+say(`${g}! I am Cartly, your shopping concierge. Tell me what you need in plain words and I will search, compare, build bundles within your budget and watch prices for you.`);
+const T=[['🔍 Search by budget','Best phone under 20k with good camera'],['🎁 Build a bundle','Laptop and mouse under 80000'],['💝 Gift finder','Gift ideas under 3000'],['🔥 Deals today','Show deals'],['✨ Trending now','What is trending'],['🧴 Skincare picks','Skincare under 700']];
+const d=document.createElement('div');d.className='qa';d.innerHTML=T.map(t=>`<div class="qt" data-a="q" data-q="${t[1]}"><b>${t[0]}</b><small>${t[1]}</small></div>`).join('');$('#msgs').appendChild(d)}
+function und(o){const a=[...o.cats,o.max&&'under '+fmt(o.max),o.min&&'above '+fmt(o.min),o.brand,...o.tags,o.sort=='p'?'cheapest first':o.sort=='r'?'best rated':''].filter(Boolean);if(!a.length)return;const d=document.createElement('div');d.className='und';d.innerHTML='<span>Understood</span>'+a.map(x=>`<i>${x}</i>`).join('');$('#msgs').appendChild(d)}
+function follow(){document.querySelectorAll('.fu').forEach(e=>e.remove());const m=[...document.querySelectorAll('.m.bt')].pop(),has=m&&m.querySelector('.pcard')&&last.length,p=has?pp(last[0]):null;
+const C=has?[['Cheaper options','cheaper'],['Better rated','better rated'],['Compare these','compare'],last.length>1?['Add all to bag','add all']:['Add to bag','add 1'],['Set price alert','alert me below '+Math.round(p.p*.9/100)*100]]:[['Show deals','show deals'],['Gift ideas','gift ideas under 3000'],['Trending now','what is trending'],['View my bag','show cart']];
+const d=document.createElement('div');d.className='fu';d.innerHTML=C.map(c=>`<span class="chip" data-a="q" data-q="${c[1]}">${c[0]}</span>`).join('');$('#msgs').appendChild(d);$('#msgs').scrollTop=1e9}
+let spk=0;const sc=p=>Math.min(99,Math.round(p.r/5*62+p.d*1.1+(1-p.p/Math.max(...P.filter(x=>x.c==p.c).map(x=>x.p)))*14));
+function bars(p){const w=[Math.pow(p.r/5,7)*100,24,10,5,4],t=w.reduce((a,b)=>a+b);return `<h4>Rating breakdown</h4>${w.map((v,k)=>`<div class="rb"><span>${5-k}★</span><i><b style="width:${v/t*100}%"></b></i><span>${Math.round(v/t*100)}%</span></div>`).join('')}`}
+const bud=t=>budget?`<div class="prog"><i style="width:${Math.min(100,t/budget*100)}%;${t>budget?'background:#c0392b':''}"></i></div><div class="tag ${t>budget?'':'w'}">${t>budget?'Over your limit by '+fmt(t-budget):fmt(budget-t)+' left of your limit'}</div>`:'';
+function tick(){const p=P[Math.floor(Math.random()*P.length)],n=Math.round(p.p*(1-.03-Math.random()*.05)/10)*10;if(n<p.o*.7||n>=p.p)return;p.p=n;p.d=Math.round((1-n/p.o)*100);p.dn=1;rg();rc();toast(`Price drop: ${p.n} now ${fmt(n)}`);if(alerts[p.id]&&n<=alerts[p.id])say(`Price alert: ${p.n} just hit ${fmt(n)}, below your target of ${fmt(alerts[p.id])}.`,0,[p])}
+let p0,lastO;const pp=x=>x.id!==undefined?x:x.p;
+const prog=s=>{const f=5000;return s>=f?'<div class="tag w">Free delivery unlocked</div>':`<div class="prog"><i style="width:${s/f*100}%"></i></div><div class="tag">Add ${fmt(f-s)} more for free delivery</div>`};
+
+/* ---- REAL IMAGES ----
+ Put your own product photos here: IMG[productId]='images/iphone15.jpg' (or any https URL).
+ Anything not listed uses a keyword photo from loremflickr; if that fails the SVG illustration is shown. */
+const IMG={};
+function imgKw(p){const n=p.n.toLowerCase(),k=artKey(p);
+if(p.c=='Phones')return 'smartphone';if(p.c=='Laptops')return 'laptop';
+if(k=='buds')return 'earbuds';if(k=='spk')return 'bluetooth,speaker';if(k=='hp')return 'headphones';
+if(p.c=='Wearables')return 'smartwatch';if(p.c=='Watches')return 'wristwatch';
+if(k=='mouse')return 'computer,mouse';if(k=='kb')return 'keyboard';if(k=='chg')return 'charger';
+if(p.c=='Gaming')return k=='ctl'?'gamepad':'playstation';
+if(p.c=='TVs')return 'television';if(p.c=='ACs')return 'air,conditioner';if(p.c=='Fridges')return 'refrigerator';
+if(p.c=='Bottles')return 'water,bottle';if(p.c=='Games')return /catan/.test(n)?'boardgame':'videogame';
+if(p.c=='Beauty')return {lip:'lipstick',ser:'skincare',perf:'perfume',tube:'cosmetics'}[k];return 'product'}
+const pimg=p=>IMG[p.id]||`https://loremflickr.com/480/360/${imgKw(p)}?lock=${p.id+11}`;
+function vis(p){return `<div class="vis hi" data-a="det" data-i="${p.id}" style="--h:${340+p.id*7%40}"><img class="ph" loading="lazy" alt="${p.n}" src="${pimg(p)}" onerror="this.parentNode.classList.remove('hi');this.remove()"><span class="vl">${p.dn?"↓ Price drop":p.d+"% off"}</span><span class="vr">★ ${p.r}</span><svg class="art" viewBox="0 0 120 90">${SV[artKey(p)]}</svg><i>${p.b}</i><small>${p.c}</small></div>`}
+function det(i){recent=[i,...recent.filter(x=>x!=i)].slice(0,5);rrv();const p=byId(i),h=[...Array(12)].map((_,k)=>k==11?p.p:Math.round(p.o*(.86+.14*((i*7+k*5)%9)/8)/10)*10),av=h.reduce((a,b)=>a+b)/12,mn=Math.min(...h),mx=Math.max(...h),pts=h.map((v,k)=>`${k*20+4},${52-(v-mn)/(mx-mn||1)*46}`).join(' '),good=p.p<=av;
+const sim=P.filter(x=>x.c==p.c&&x.id!=i).sort((a,b)=>Math.abs(a.p-p.p)-Math.abs(b.p-p.p)).slice(0,3);
+$('#mb').innerHTML=`<div class="dt">${vis(p)}<div><span class="tag">${p.b} · ${p.c}</span><h2>${p.n}</h2><div><span class="pr">${fmt(p.p)}</span><span class="old">${fmt(p.o)}</span><span class="off">${p.d}% off</span></div><p class="tag">★${p.r} · ${(p.id*397%1800)+240} reviews · Cartly Score <b>${sc(p)}</b> · ${p.t}</p><p><b>${fmt(p.p/12)}/mo</b> · no-cost EMI, 12 months</p></div></div>
+<h4>12-week price trend</h4><svg class="spark" viewBox="0 0 228 58" preserveAspectRatio="none"><polyline points="${pts}" fill="none" stroke="currentColor" stroke-width="2" vector-effect="non-scaling-stroke"/></svg>
+<p class="${good?'w':''}">${good?'Good time to buy':'Consider waiting'}: ${good?'priced at or below':'priced above'} its 12-week average of ${fmt(av)}. Lowest seen ${fmt(mn)}.</p>
+${pcx(p)}${bars(p)}<div class="mini"><input id="al" placeholder="Alert me below ₹ (now ${p.p})" inputmode="numeric"><button class="btn" data-a="alert" data-i="${i}">Set alert</button></div>${alerts[i]?`<div class="tag w">Alert active: below ${fmt(alerts[i])}</div>`:""}<div class="mini"><input id="pin" placeholder="Check delivery · pincode" maxlength="6" inputmode="numeric"><button class="btn" data-a="pin">Check</button></div><div id="pr" class="tag" style="margin:4px 0 10px"></div><div class="row"><button class="btn pri" data-a="add" data-i="${i}">Add to bag</button><button class="btn" data-a="cmp" data-i="${i}">Compare</button><button class="btn" data-a="close">Close</button></div>
+<h4>Similar products</h4>${sim.map(x=>`<div class="mini"><span class="e">${x.b[0]}</span><div class="i"><b>${x.n}</b><small>${fmt(x.p)} · ★${x.r}</small></div><button class="btn" data-a="det" data-i="${x.id}">View</button></div>`).join('')}`;$('#md').classList.add('o')}
+function addCart(i){cart[i]=(cart[i]||0)+1;save();rc();toast(byId(i).n+" added to bag")}
+function rc(){$('#cn').textContent=Object.values(cart).reduce((a,b)=>a+b,0);const ks=Object.keys(cart);
+$('#ci').innerHTML=ks.length?ks.map(i=>{const p=byId(i);return`<div class="ci"><span class="e">${p.b[0]}</span><div style="flex:1"><b>${p.n}</b><br><small class="tag">${fmt(p.p)}</small></div><button class="btn" data-a="dec" data-i="${i}">−</button><b>${cart[i]}</b><button class="btn" data-a="add" data-i="${i}">+</button></div>`}).join(''):'<div class="empty">Cart is empty <br>Ask the assistant for suggestions!</div>';
+const sub=ks.reduce((a,i)=>a+byId(i).p*cart[i],0);let dis=0;
+if(coupon=='SAVE10')dis=sub*.1;if(coupon=='WELCOME500'&&sub>=3000)dis=500;if(coupon=='FEST20')dis=Math.min(2000,sub*.2);
+const sv=ks.reduce((a,i)=>a+(byId(i).o-byId(i).p)*cart[i],0);
+$('#tt').innerHTML=`<div>Subtotal <b style="float:right">${fmt(sub)}</b></div><div class="w">${coupon?'Coupon '+coupon+'<b style="float:right">−'+fmt(dis)+'</b>':''}</div>${bud(sub-dis)}${prog(sub)}<div class="tag">You already save ${fmt(sv)} on MRP</div><h3 style="margin:6px 0">Total <span style="float:right">${fmt(sub-dis)}</span></h3>`}
+function filt(){let l=P.filter(p=>p.p<=+$('#mx').value&&(!$('#cat').value||p.c==$('#cat').value)&&(!$('#br').value||p.b==$('#br').value)&&p.r>=+$('#rt').value&&(p.n+p.b+p.c+p.t).toLowerCase().includes($('#s').value.toLowerCase()));
+if(dsc)l=l.filter(p=>p.d>=dsc.m&&(!dsc.u||p.p<=dsc.u));if(view)l=P.filter(p=>view.ids.includes(p.id));const s=$('#so').value||(dsc?'d':'');
+if(s=='pa')l.sort((a,b)=>a.p-b.p);if(s=='pd')l.sort((a,b)=>b.p-a.p);if(s=='r')l.sort((a,b)=>b.r-a.r);if(s=='d')l.sort((a,b)=>b.d-a.d);if(s=='sc')l.sort((a,b)=>sc(b)-sc(a));
+if(view&&!s)l.sort((a,b)=>view.ids.indexOf(a.id)-view.ids.indexOf(b.id));return l}
+function rg(){const l=filt();rx();$('#mv').textContent=fmt($('#mx').value);
+$('#vw').innerHTML=dsc?` ${dsc.l} (${l.length}) <a href="#" id="cv">clear</a>`:view?` Showing assistant results (${l.length}) <a href="#" id="cv">clear</a>`:`${l.length} products`;
+$('#grid').innerHTML=l.length?l.map(p=>`<div class="card p">${vis(p)}${view&&view.pct&&view.pct[p.id]?`<span class="mt">${view.pct[p.id]}% match</span>`:''}<b class="nm" data-a="det" data-i="${p.id}">${p.n}</b><span class="tag">${p.b} · ${p.c} · Score ${sc(p)}</span><div><span class="pr">${fmt(p.p)}</span><span class="old">${fmt(p.o)}</span><span class="off">${p.d}% off</span></div>
+<div class="row"><button class="btn pri" data-a="add" data-i="${p.id}">Add</button><button class="btn" data-a="cmp" data-i="${p.id}">Compare</button><button class="btn" data-a="wish" data-i="${p.id}">${wish.includes(p.id)?'♥':'♡'}</button></div></div>`).join(''):'<div class="empty" style="grid-column:1/-1">No products match these filters.</div>';
+wn()}
+const wn=()=>$('#wn').textContent=wish.length,kc=()=>$('#kn').textContent=cmp.length;
+function showCmp(){const l=cmp.map(byId);if(l.length<2){$('#mb').innerHTML='<div class="empty">Pick at least 2 products with  (max 3).</div>';return $('#md').classList.add('o')}
+const mn=Math.min(...l.map(p=>p.p)),mr=Math.max(...l.map(p=>p.r)),val=l.map(p=>p.r/p.p*1e4),bv=Math.max(...val);
+const row=(k,f)=>`<tr><th>${k}</th>${l.map(f).join('')}</tr>`;
+$('#mb').innerHTML=`<h3 style="margin-top:0"> Smart comparison</h3><table>${row('',p=>`<td><b>${p.n}</b></td>`)}${row('Price',p=>`<td class="${p.p==mn?'w':''}">${fmt(p.p)}</td>`)}${row('Rating',p=>`<td class="${p.r==mr?'w':''}">★${p.r}</td>`)}${row('Discount',p=>`<td>${p.d}%</td>`)}${row('Brand',p=>`<td>${p.b}</td>`)}${row('Highlights',p=>`<td>${p.t}</td>`)}${row('Value score',(p,i)=>`<td class="${val[i]==bv?'w':''}">${val[i].toFixed(1)}</td>`)}</table>
+<p> <b>Verdict:</b> ${l[val.indexOf(bv)].n} gives the best value for money; ${l.find(p=>p.r==mr).n} is the best rated.</p><button class="btn" data-a="close">Close</button> <button class="btn" data-a="clrcmp">Clear</button>`;$('#md').classList.add('o')}
+function openCart(o){$('#dr').classList.toggle('o',o)}
+document.addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(e.target.id=='cv'){e.preventDefault();view=null;dsc=null;rg();return}if(!t)return;const a=t.dataset.a,i=+t.dataset.i;
+if(a=='add'){const o=t.textContent;addCart(i);t.textContent='✓';setTimeout(()=>t.textContent=o,700)}
+if(a=='det')det(i);if(a=='back'){view=null;dsc=null;['#cat','#br','#s','#so'].forEach(k=>$(k).value='');$('#rt').value=0;$('#mx').value=$('#mx').max;rg();window.scrollTo({top:0,behavior:'smooth'})}if(a=='disc'){dsc={m:+t.dataset.m,u:+t.dataset.u,l:t.dataset.l};view=null;$('#cat').value='';$('#s').value='';$('#so').value='d';$('#mx').value=$('#mx').max;rg();$('#shop').scrollIntoView({behavior:'smooth'})}if(a=='cpn'){try{navigator.clipboard.writeText(t.dataset.c)}catch(x){}toast('Copied '+t.dataset.c+' — apply it in your bag')}if(a=='cat'){const c=t.dataset.c;$('#cat').value=c=='All'?'':c;$('#s').value='';view=null;dsc=null;rg();$('#shop').scrollIntoView({behavior:'smooth'})}if(a=='chat')openChat();if(a=='bn')bgo(t.dataset.d?bi+(+t.dataset.d):+t.dataset.i);if(a=='all'){e.preventDefault();dsc=t.dataset.s=='d50'?{m:50,u:0,l:'50% off & above'}:t.dataset.s=='p999'?{m:0,u:999,l:'Under ₹999'}:null;$('#so').value=t.dataset.s;$('#mx').value=t.dataset.s=='pa'?3000:$('#mx').max;rg();$('#shop').scrollIntoView({behavior:'smooth'})}if(a=='q')ask(t.dataset.q);if(a=='alert'){const v=+($('#al').value||0);if(v>0){alerts[i]=v;save();toast('Alert set below '+fmt(v));det(i)}else toast('Enter a target price')}if(a=='pin'){const v=$('#pin').value.trim();$('#pr').textContent=/^[1-9]\d{5}$/.test(v)?'Delivery by '+eta(3)+' · free above ₹5,000':'Enter a valid 6-digit pincode'}if(a=='dec'){if(--cart[i]<=0)delete cart[i];save();rc()}
+if(a=='cmp'){if(cmp.includes(i))cmp=cmp.filter(x=>x!=i);else if(cmp.length<3)cmp.push(i);else{cmp.shift();cmp.push(i)}kc()}
+if(a=='wish'){wish=wish.includes(i)?wish.filter(x=>x!=i):[...wish,i];save();rg()}
+if(a=='close')$('#md').classList.remove('o');if(a=='clrcmp'){cmp=[];kc();$('#md').classList.remove('o')}});
+$('#md').onclick=e=>{if(e.target.id=='md')$('#md').classList.remove('o')};
+$('#go').onclick=()=>{ask($('#q').value);$('#q').value=''};$('#q').onkeydown=e=>{if(e.key=='Enter')$('#go').click()};
+$('#cb').onclick=()=>openCart(!$('#dr').classList.contains('o'));$('#x').onclick=()=>openCart(0);
+$('#cmpb').onclick=showCmp;$('#wl').onclick=()=>{view=wish.length?{ids:wish}:null;rg();if(!wish.length)toast('Your wishlist is empty — tap ♡ on any product')};
+['s','cat','so','mx','br','rt'].forEach(k=>$('#'+k).oninput=()=>{view=null;rg()});
+$('#ap').onclick=()=>{const c=$('#cp').value.trim().toUpperCase();if(['SAVE10','WELCOME500','FEST20'].includes(c)){coupon=c;rc();if(c=='WELCOME500'&&Object.keys(cart).reduce((a,i)=>a+byId(i).p*cart[i],0)<3000)toast('WELCOME500 needs ₹3,000+ in your bag')}else{coupon=null;rc();$('#cp').value='';$('#cp').placeholder='Invalid code '}};
+$('#co').onclick=()=>{if(!Object.keys(cart).length)return toast('Your bag is empty');$('#mb').innerHTML=`<div class="empty"><h3>Order confirmed</h3>Order #CL${Math.floor(Math.random()*9e5+1e5)} · arriving by ${eta(3)}<div class="tl"><div class="on">Placed</div><div>Packed</div><div>Shipped</div><div>Delivered</div></div><button class="btn pri" data-a="close">Done</button></div>`;$('#md').classList.add('o');cart={};coupon=null;save();rc();openCart(0)};
+$('#th').onclick=()=>{const r=document.documentElement,d=r.dataset.theme=='dark';r.dataset.theme=d?'light':'dark';try{localStorage.setItem('cartly_theme',r.dataset.theme)}catch(e){}};try{const th=localStorage.getItem('cartly_theme');if(th)document.documentElement.dataset.theme=th}catch(e){}
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+$('#mic').onclick=()=>{if(!SR)return say('Voice input is not supported in this browser — please type instead.');const r=new SR();r.lang='en-IN';r.onresult=e=>ask(e.results[0][0].transcript);r.onerror=()=>say('Could not hear you, try again ');r.start()};
+[...new Set(P.map(p=>p.b))].sort().forEach(b=>$("#br").insertAdjacentHTML("beforeend",`<option>${b}</option>`));CATS.forEach(c=>$('#cat').insertAdjacentHTML('beforeend',`<option>${c}</option>`));
+['best phone under 20k with good camera','gaming laptop and mouse under 80000','cheap fitness band','show deals','noise cancelling headphones','gift ideas under 3000','what is trending','AC under 45000','skincare under 700'].forEach(t=>{const c=document.createElement('span');c.className='chip';c.textContent=t;c.onclick=()=>ask(t);$('#chips').appendChild(c)});
+welcome();
+document.addEventListener('keydown',e=>{if(e.key=='Escape'){$('#md').classList.remove('o');openCart(0)}if(e.key=='/'&&document.activeElement.tagName!='INPUT'){e.preventDefault();$('#q').focus()}});$('#vo').onclick=()=>{spk=!spk;$('#vo').classList.toggle('act',spk);toast('Read aloud '+(spk?'on':'off'));if(!spk&&window.speechSynthesis)speechSynthesis.cancel()};$('#bs').onclick=()=>{budget=+$('#bg').value||0;rc()};setInterval(tick,25000);SV.all='<rect class="k1" x="28" y="12" width="28" height="28" rx="6"/><rect class="k2 st" x="64" y="12" width="28" height="28" rx="6"/><rect class="k3" x="28" y="48" width="28" height="28" rx="6"/><rect class="k1" x="64" y="48" width="28" height="28" rx="6"/>';rb();
+$('#bnr').onmouseenter=()=>bnh=1;$('#bnr').onmouseleave=()=>bnh=0;setInterval(()=>{if(!document.hidden&&!bnh)bgo(bi+1)},5000);setInterval(cdt,1000);
+$('#nc').onclick=()=>{$('#msgs').innerHTML='';last=[];lastO=null;view=null;rg();welcome()};$('#sb').onclick=()=>{rg();$('#shop').scrollIntoView({behavior:'smooth'})};$('#s').onkeydown=e=>{if(e.key=='Enter')$('#sb').click()};
+rc();kc();rg();rrv();
+
+/* ---- draggable Ask Cartly AI launcher + movable chat ---- */
+const MASCOT='<svg viewBox="0 0 48 48"><path d="M9 20L7 5l12 8zM39 20l2-15-12 8z" fill="#98002e"/><path d="M11 17l-1-8 6 4zM37 17l1-8-6 4z" fill="#f6a5b8"/><ellipse cx="24" cy="28" rx="18" ry="16" fill="#fff"/><ellipse cx="24" cy="28" rx="18" ry="16" fill="none" stroke="#98002e" stroke-width="2.4"/><ellipse cx="17" cy="26" rx="2.6" ry="3.4" fill="#2d0a12"/><ellipse cx="31" cy="26" rx="2.6" ry="3.4" fill="#2d0a12"/><circle cx="18" cy="24.8" r=".9" fill="#fff"/><circle cx="32" cy="24.8" r=".9" fill="#fff"/><ellipse cx="11.5" cy="32" rx="3.4" ry="2.2" fill="#f6a5b8" opacity=".85"/><ellipse cx="36.5" cy="32" rx="3.4" ry="2.2" fill="#f6a5b8" opacity=".85"/><path d="M20.5 32q3.5 4 7 0" fill="none" stroke="#98002e" stroke-width="2" stroke-linecap="round"/><path d="M20 4q4-3 8 0" fill="none" stroke="#98002e" stroke-width="2" stroke-linecap="round"/></svg>';
+$('#fm').innerHTML=MASCOT;$('.av').innerHTML=MASCOT;
+const fab=$('#fab'),chat=$('#chat'),chHd=chat.querySelector('.ch'),EDGE=8,mob=()=>innerWidth<=700,cl=(v,a,b)=>Math.max(a,Math.min(b,v));
+let fpos=null,dragged=false;
+try{fpos=JSON.parse(localStorage.getItem('cartly_fab')||'null')}catch(e){}
+function placeFab(x,y){const w=fab.offsetWidth,h=fab.offsetHeight;x=cl(x,EDGE,innerWidth-w-EDGE);y=cl(y,EDGE,innerHeight-h-EDGE);fab.style.left=x+'px';fab.style.top=y+'px';fab.style.right='auto';fab.style.bottom='auto';fpos={x,y}}
+function initFab(){fpos?placeFab(fpos.x,fpos.y):placeFab(innerWidth-fab.offsetWidth-20,innerHeight-fab.offsetHeight-22)}
+function setChat(x,y){const w=chat.offsetWidth,h=chat.offsetHeight;chat.style.left=cl(x,EDGE,innerWidth-w-EDGE)+'px';chat.style.top=cl(y,EDGE,innerHeight-h-EDGE)+'px';chat.style.right='auto';chat.style.bottom='auto'}
+function openChat(){chat.classList.add('o');if(mob()){['left','top','right','bottom'].forEach(k=>chat.style[k]='')}else{const f=fab.getBoundingClientRect(),w=chat.offsetWidth,h=chat.offsetHeight;setChat(f.left+f.width/2>innerWidth/2?f.right-w:f.left,f.top+f.height/2>innerHeight/2?f.top-h-12:f.bottom+12)}setTimeout(()=>$('#q').focus({preventScroll:true}),50)}
+function closeChat(){chat.classList.remove('o');if(window.speechSynthesis)speechSynthesis.cancel()}
+function makeDraggable(el,handle,move,ok){let d=null;handle.addEventListener('pointerdown',e=>{if(e.button>0||(ok&&!ok(e)))return;const r=el.getBoundingClientRect();d={sx:e.clientX,sy:e.clientY,ox:r.left,oy:r.top,m:false};handle.setPointerCapture(e.pointerId)});
+handle.addEventListener('pointermove',e=>{if(!d)return;const dx=e.clientX-d.sx,dy=e.clientY-d.sy;if(!d.m&&Math.hypot(dx,dy)<6)return;d.m=true;handle.classList.add('drg');move(d.ox+dx,d.oy+dy)});
+const end=()=>{if(!d)return;if(d.m){dragged=true;setTimeout(()=>dragged=false,80);try{localStorage.setItem('cartly_fab',JSON.stringify(fpos))}catch(e){}}d=null;handle.classList.remove('drg')};
+handle.addEventListener('pointerup',end);handle.addEventListener('pointercancel',end)}
+makeDraggable(fab,fab,(x,y)=>placeFab(x,y));
+makeDraggable(chat,chHd,setChat,e=>!mob()&&!e.target.closest('button'));
+fab.addEventListener('click',()=>{if(dragged)return;openChat()});
+$('#cx').addEventListener('click',closeChat);
+addEventListener('resize',()=>{initFab();if(chat.classList.contains('o')){if(mob())['left','top','right','bottom'].forEach(k=>chat.style[k]='');else if(chat.style.left)setChat(parseFloat(chat.style.left),parseFloat(chat.style.top))}});
+addEventListener('keydown',e=>{if(e.key=='Escape'&&chat.classList.contains('o')&&!$('#md').classList.contains('o'))closeChat()});
+initFab();
+</script></body></html>
